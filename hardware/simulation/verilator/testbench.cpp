@@ -1,6 +1,8 @@
 #include <verilated.h>
 #include "obj_dir/Viob_cache.h"
 
+#define NUM_INPUT_SET 10
+
 int main(int argc, char **argv)
 {
     Viob_cache *top = new Viob_cache;
@@ -10,25 +12,22 @@ int main(int argc, char **argv)
     // reset
     top->reset = 1;
 
-    for (j = 0; j < 10; j++)
+    for (int i = 0; i < 10; i++)
     {
         top->clk = !top->clk;
         top->eval();
     }
 
     top->reset = 0;
-    for (j = 0; j < 10; j++)
+    for (int i = 0; i < 10; i++)
     {
         top->clk = !top->clk;
         top->eval();
     }
 
     top->ready = 0;
-    int i, j;
-    for (j = 0; j < NUM_INPUT_SET; j++)
+    for (int i = 0; i < NUM_INPUT_SET; i++)
     {
-        i = 0;
-
         // hook up to tools...
         // 0 <= addr <= 4095
         // wdata: 4-byte long integer
@@ -39,21 +38,22 @@ int main(int argc, char **argv)
         top->wstrb = 0;
         top->valid = true;
 
-        while (top->ready == 0 && ++i < 30)
+        int j = 0;
+        while (top->ready == 0 && ++j < 30)
         {
             // Toggle a clock
             top->clk = !top->clk;
             top->eval();
         }
 
-        for (i = 0; i < 4; i++)
+        for (int k = 0; k < 4; k++)
         {
             top->clk = !top->clk;
             top->eval();
         }
 
         top->valid = 0;
-        for (i = 0; i < 4; i++)
+        for (int k = 0; k < 4; k++)
         {
             top->clk = !top->clk;
             top->eval();
@@ -61,5 +61,5 @@ int main(int argc, char **argv)
     }
 
     delete top;
-    exit(0);
+    return 0;
 }
