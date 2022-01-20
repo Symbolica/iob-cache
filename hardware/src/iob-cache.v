@@ -55,16 +55,23 @@ module iob_cache
     input                                       force_inv_in, //force 1'b0 if unused
     output                                      force_inv_out, 
     input                                       wtb_empty_in, //force 1'b1 if unused
-    output                                      wtb_empty_out, 
+    output                                      wtb_empty_out
 `endif  
     //Slave i/f - Native
-    output                                      mem_valid,
-    output [BE_ADDR_W-1:0]                      mem_addr,
-    output [BE_DATA_W-1:0]                      mem_wdata,
-    output [BE_NBYTES-1:0]                      mem_wstrb,
-    input [BE_DATA_W-1:0]                       mem_rdata,
-    input                                       mem_ready
+    // output                                      mem_valid,
+    // output [BE_ADDR_W-1:0]                      mem_addr,
+    // output [BE_DATA_W-1:0]                      mem_wdata,
+    // output [BE_NBYTES-1:0]                      mem_wstrb,
+    // input [BE_DATA_W-1:0]                       mem_rdata,
+    // input                                       mem_ready
     );
+
+    wire [BE_DATA_W-1:0]                      mem_rdata;
+    wire                                      mem_valid;
+    wire [BE_ADDR_W-1:0]                      mem_addr;
+    wire [BE_DATA_W-1:0]                      mem_wdata;
+    wire [BE_NBYTES-1:0]                      mem_wstrb;
+    reg                                       mem_ready;
 
    
    //internal signals (front-end inputs)
@@ -245,7 +252,26 @@ module iob_cache
       .mem_ready (mem_ready)  
       );
    
-   
+   `define MEM_ADDR_W 12
+   `define MEM_DATA_W 64
+     iob_sp_ram #(
+       .DATA_W(`MEM_DATA_W),
+       .ADDR_W(`MEM_ADDR_W-2)
+      )
+
+     native_ram(
+         .clk(clk),
+         .en   (mem_valid),
+         .we   (mem_wstrb),
+         .addr (mem_addr[`MEM_ADDR_W-1:$clog2(`MEM_DATA_W/8)]),
+         .dout (mem_rdata),
+         .din  (mem_wdata)
+     );
+
+     always @(posedge clk)
+        begin
+         mem_ready <= mem_valid;
+        end
    
    generate
       if (CTRL_CACHE)
