@@ -1,0 +1,2 @@
+*.bc
+hardware/simulation/verilator/obj_dir/
