@@ -1,4 +1,4 @@
-#include <verilated.h>
+#include <symbolica.h>
 #include "obj_dir/Viob_cache.h"
 
 #define NUM_INPUT_SET 10
@@ -9,7 +9,6 @@ int main(int argc, char **argv)
 
     top->clk = 0;
 
-    // reset
     top->reset = 1;
 
     for (int i = 0; i < 10; i++)
@@ -33,7 +32,15 @@ int main(int argc, char **argv)
         // wdata: 4-byte long integer
         // 0 <= wstrb <= 15
         // valid: boolean
-        top->addr = 0;
+        int addr;
+        SYMBOLIZE(addr);
+
+        if (addr < 0 || addr > 4095)
+        {
+            return 0;
+        }
+
+        top->addr = addr;
         top->wdata = 0;
         top->wstrb = 0;
         top->valid = true;
@@ -41,7 +48,6 @@ int main(int argc, char **argv)
         int j = 0;
         while (top->ready == 0 && ++j < 30)
         {
-            // Toggle a clock
             top->clk = !top->clk;
             top->eval();
         }
