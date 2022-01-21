@@ -1,36 +1,65 @@
 #include <verilated.h>
-
 #include "obj_dir/Viob_cache.h"
 
-int main(int argc, char** argv) {
+#define NUM_INPUT_SET 10
 
-    Viob_cache* tb = new Viob_cache; // Create UUT
+int main(int argc, char **argv)
+{
+    Viob_cache *top = new Viob_cache;
 
-    tb->reset = 0; // Init wire to initial value
+    top->clk = 0;
 
-    int main_time = 0;
-    while (!Verilated::gotFinish()) {
-        if (main_time > 10) {
-            tb->reset = 1;
+    // reset
+    top->reset = 1;
+
+    for (int i = 0; i < 10; i++)
+    {
+        top->clk = !top->clk;
+        top->eval();
+    }
+
+    top->reset = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        top->clk = !top->clk;
+        top->eval();
+    }
+
+    top->ready = 0;
+    for (int i = 0; i < NUM_INPUT_SET; i++)
+    {
+        // hook up to tools...
+        // 0 <= addr <= 4095
+        // wdata: 4-byte long integer
+        // 0 <= wstrb <= 15
+        // valid: boolean
+        top->addr = 0;
+        top->wdata = 0;
+        top->wstrb = 0;
+        top->valid = true;
+
+        int j = 0;
+        while (top->ready == 0 && ++j < 30)
+        {
+            // Toggle a clock
+            top->clk = !top->clk;
+            top->eval();
         }
-        if ((main_time % 10) == 1) {
-            tb->clk = 1;
-        }
-        if ((main_time % 10) == 6) {
-            tb->clk = 0;
-        }
-        tb->eval();
-        main_time++;
 
-        // Stop after a set time, since otherwise the current design would simulate forever
-        if(main_time > 100){
-            break;
+        for (int k = 0; k < 4; k++)
+        {
+            top->clk = !top->clk;
+            top->eval();
+        }
+
+        top->valid = 0;
+        for (int k = 0; k < 4; k++)
+        {
+            top->clk = !top->clk;
+            top->eval();
         }
     }
 
-    tb->final();
-
-    delete tb;
-
+    delete top;
     return 0;
 }
