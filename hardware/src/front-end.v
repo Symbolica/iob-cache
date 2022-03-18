@@ -128,4 +128,62 @@ module front_end
    assign data_wstrb_reg = wstrb_reg;
    assign data_valid_reg = valid_reg;
    
+   reg [7:0] debugOutput;
+   reg debugOutput2, debugOutput3, debugOutput4;
+
+   always @(posedge clk)
+    begin
+      if(ready == 1)
+        if (wstrb == 0)
+          if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h1234 && rdata == 32'hDEADBEEF)
+              begin
+                assign debugOutput = 8'h1;
+                debugOutput2 <= 1;
+                debugOutput3 <= 0;
+                debugOutput4 <= 1;
+              end
+          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h579 && rdata == 32'hCAFEEFAC)
+              begin
+                assign debugOutput = 8'h2;
+                debugOutput2 <= 0;
+                debugOutput3 <= 0;
+                debugOutput4 <= 1;
+              end
+          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h308 && rdata == 32'h01020304)
+              begin
+                assign debugOutput = 8'h3;
+                debugOutput2 <= 1;
+                debugOutput3 <= 1;
+                debugOutput4 <= 0;
+              end
+          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'hF00 && rdata == 32'hF1E2D3C4)
+              begin
+                assign debugOutput = 8'h4;
+                debugOutput2 <= 0;
+                debugOutput3 <= 1;
+                debugOutput4 <= 0;
+              end
+          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h169 && rdata == 32'hA1B2C3D4)
+              begin
+                assign debugOutput = 8'h5;
+                debugOutput2 <= 1;
+                debugOutput3 <= 1;
+                debugOutput4 <= 1;
+              end
+          else
+              begin
+                assign debugOutput = 8'h0;
+                debugOutput2 <= 0;
+                debugOutput3 <= 0;
+                debugOutput4 <= 0;
+              end
+        else
+        begin
+          assign debugOutput = 8'hx;
+          debugOutput2 <= 1'bx;
+          debugOutput3 <= 1'bx;
+          debugOutput4 <= 1'bx;
+        end
+    end
+
 endmodule

@@ -252,7 +252,7 @@ module iob_cache
       .mem_ready (mem_ready)  
       );
    
-   `define MEM_ADDR_W 12
+   `define MEM_ADDR_W 15
    `define MEM_DATA_W 64
      iob_sp_ram #(
        .DATA_W(`MEM_DATA_W),
