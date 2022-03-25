@@ -135,35 +135,35 @@ module front_end
     begin
       if(ready == 1)
         if (wstrb == 0)
-          if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h1234 && rdata == 32'hDEADBEEF)
+          if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h1234 && wdata == 32'hDEADBEEF)
               begin
                 assign debugOutput = 8'h1;
                 debugOutput2 <= 1;
                 debugOutput3 <= 0;
                 debugOutput4 <= 1;
               end
-          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h579 && rdata == 32'hCAFEEFAC)
+          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h579 && wdata == 32'hCAFEEFAC)
               begin
                 assign debugOutput = 8'h2;
                 debugOutput2 <= 0;
                 debugOutput3 <= 0;
                 debugOutput4 <= 1;
               end
-          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h308 && rdata == 32'h01020304)
+          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h308 && wdata == 32'h01020304)
               begin
                 assign debugOutput = 8'h3;
                 debugOutput2 <= 1;
                 debugOutput3 <= 1;
                 debugOutput4 <= 0;
               end
-          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'hF00 && rdata == 32'hF1E2D3C4)
+          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'hF00 && wdata == 32'hF1E2D3C4)
               begin
                 assign debugOutput = 8'h4;
                 debugOutput2 <= 0;
                 debugOutput3 <= 1;
                 debugOutput4 <= 0;
               end
-          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h169 && rdata == 32'hA1B2C3D4)
+          else if( addr[FE_ADDR_W-1:FE_BYTE_W] == 13'h169 && wdata == 32'hA1B2C3D4)
               begin
                 assign debugOutput = 8'h5;
                 debugOutput2 <= 1;
