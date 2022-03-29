@@ -36,7 +36,7 @@ int main(int argc, char **argv)
         SYMBOLIZE(wstrb);
         SYMBOLIZE(valid);
 
-        if (addr < 0 || addr > 4095)
+        if (addr < 0 || addr > 8191)
         {
             return 0;
         }
