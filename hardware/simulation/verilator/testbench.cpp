@@ -1,7 +1,19 @@
 #include <symbolica.h>
 #include "obj_dir/Viob_cache.h"
 
-#define NUM_INPUT_SET 1
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+    bool loop()
+    {
+        return true;
+    }
+
+#ifdef __cplusplus
+}
+#endif
 
 int main(int argc, char **argv)
 {
@@ -24,7 +36,7 @@ int main(int argc, char **argv)
     }
 
     top->ready = 0;
-    for (int i = 0; i < NUM_INPUT_SET; i++)
+    do
     {
         vluint32_t addr;
         vluint32_t wdata;
@@ -76,6 +88,7 @@ int main(int argc, char **argv)
             top->eval();
         }
     }
+    while (loop());
 
     delete top;
     return 0;
